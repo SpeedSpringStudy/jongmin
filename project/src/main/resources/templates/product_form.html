@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>상품 추가</title>
+</head>
+<body>
+<h1>상품 추가</h1>
+<form id="addForm">
+    <input type="text" name="name" placeholder="이름" required/><br/>
+    <input type="number" name="price" placeholder="가격" required/><br/>
+    <input type="text" name="imageUrl" placeholder="이미지 URL" required/><br/>
+    <button type="submit">저장</button>
+</form>
+<button onclick="location.href='/products'">목록으로</button>
+
+<script>
+    document.getElementById("addForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const data = {
+            name: form.name.value,
+            price: parseInt(form.price.value),
+            imageUrl: form.imageUrl.value
+        };
+
+        await fetch("/api/products", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        location.href = "/products";
+    });
+</script>
+</body>
+</html>

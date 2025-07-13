@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>상품 목록</title>
+</head>
+<body>
+<h1>상품 목록</h1>
+
+<!-- 상품 추가 버튼 -->
+<button onclick="location.href='/products/new'">상품 추가</button>
+
+<!-- 상품 목록 테이블 -->
+<table border="1" cellpadding="10" cellspacing="0">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>이름</th>
+        <th>가격</th>
+        <th>이미지</th>
+        <th>액션</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="product : ${products}">
+        <td th:text="${product.id}"></td>
+        <td th:text="${product.name}"></td>
+        <td th:text="${product.price}"></td>
+        <td><img th:src="${product.imageUrl}" alt="이미지" width="80"></td>
+        <td>
+            <!-- 수정 버튼 -->
+            <button th:onclick="|location.href='/products/edit/${product.id}'|">수정</button>
+            <!-- 삭제 버튼 -->
+            <button th:attr="onclick=|deleteProduct(${product.id})|">삭제</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<!-- 삭제 비동기 처리 스크립트 -->
+<script>
+    function deleteProduct(id) {
+        if (!confirm("정말 삭제하시겠습니까?")) return;
+
+        fetch('/api/products/' + id, { method: 'DELETE' })
+            .then(res => {
+                if (res.ok) {
+                    alert("삭제 성공");
+                    location.reload();
+                } else {
+                    alert("삭제 실패");
+                }
+            })
+            .catch(() => alert("에러 발생"));
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>상품 수정</title>
+</head>
+<body>
+<h1>상품 수정</h1>
+<form id="editForm" th:attr="data-id=${product.id}">
+    <input type="text" name="name" th:value="${product.name}" required/><br/>
+    <input type="number" name="price" th:value="${product.price}" required/><br/>
+    <input type="text" name="imageUrl" th:value="${product.imageUrl}" required/><br/>
+    <button type="submit">수정</button>
+</form>
+<button onclick="location.href='/products'">목록으로</button>
+
+<script>
+    document.getElementById("editForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const id = form.getAttribute("data-id");
+        const data = {
+            name: form.name.value,
+            price: parseInt(form.price.value),
+            imageUrl: form.imageUrl.value
+        };
+
+        await fetch("/api/products/" + id, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+        });
+
+        location.href = "/products";
+    });
+</script>
+</body>
+</html>

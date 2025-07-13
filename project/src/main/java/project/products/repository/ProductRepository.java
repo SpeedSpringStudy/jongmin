@@ -16,6 +16,10 @@ public class ProductRepository {
         return new ArrayList<>(store.values());
     }
 
+    public Product getOne(Long id) {
+        return store.get(id);
+    }
+
     public Product save(Product product) {
         Long id = idSequence.getAndIncrement();
         Product newProdcut = Product.builder()
