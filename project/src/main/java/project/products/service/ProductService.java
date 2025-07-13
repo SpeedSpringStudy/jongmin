@@ -17,6 +17,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public Object getOne(Long id) {
+        return productRepository.getOne(id);
+    }
+
     public Product create(Product product) {
         return productRepository.save(product);
     }
@@ -28,4 +32,5 @@ public class ProductService {
     public void delete(Long id) {
         productRepository.delete(id);
     }
+
 }
