@@ -4,6 +4,7 @@ import lombok.*;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class Product {
     private Long id;
     private String name;

@@ -21,13 +21,15 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Product> create(@RequestBody Product product) {
-        return ResponseEntity.ok(productService.create(product));
+    public ResponseEntity<Void> create(@RequestBody Product product) {
+        productService.add(product);
+        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> update(@PathVariable Long id, @RequestBody Product product) {
-        return ResponseEntity.ok(productService.update(id, product));
+    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Product product) {
+        productService.update(id, product);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
