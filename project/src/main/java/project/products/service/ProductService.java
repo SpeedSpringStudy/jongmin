@@ -2,8 +2,8 @@ package project.products.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import project.products.dao.ProductDao;
 import project.products.domain.Product;
-import project.products.repository.ProductRepository;
 
 import java.util.List;
 
@@ -11,26 +11,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductService {
 
-    private final ProductRepository productRepository;
+    private final ProductDao productDao;
 
     public List<Product> getAll() {
-        return productRepository.findAll();
+        return productDao.findAll();
     }
 
-    public Object getOne(Long id) {
-        return productRepository.getOne(id);
+    public Product getOne(Long id) {
+        return productDao.findById(id);
     }
 
-    public Product create(Product product) {
-        return productRepository.save(product);
+    public void add(Product product) {
+        productDao.save(product);
     }
 
-    public Product update(Long id, Product product) {
-        return productRepository.update(id, product);
+    public void update(Long id, Product product) {
+        productDao.update(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
     }
 
     public void delete(Long id) {
-        productRepository.delete(id);
+        productDao.delete(id);
     }
-
 }
