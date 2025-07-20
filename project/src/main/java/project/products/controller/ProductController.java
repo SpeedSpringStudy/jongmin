@@ -1,8 +1,10 @@
 package project.products.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.products.dto.ProductRequestDto;
 import project.products.service.ProductService;
 import project.products.domain.Product;
 
@@ -21,8 +23,8 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody Product product) {
-        productService.add(product);
+    public ResponseEntity<Void> create(@RequestBody @Valid ProductRequestDto request) {
+        productService.add(request.toEntity());
         return ResponseEntity.ok().build();
     }
 
