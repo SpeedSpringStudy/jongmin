@@ -6,9 +6,9 @@
 1. 상품 추가, 수정 시 유효성 검사
 
    상품을 추가하거나 수정하는 경우, 클라이언트로부터 잘못된 값이 전달될 수 있다. 잘못된 값이 전달되면 클라이언트가 어떤 부분이 왜 잘못되었는지 인지할 수 있도록 응답을 제공한다.
-    - [ ] 상품 이름은 공백 포함 최대 15자까지 입력 가능
-    - [ ] 가능한 특수 문자: ( ), [ ], +, -, &, /, _
-    - [ ] "카카오"가 포함된 문구는 담당 MD와 협의한 경우에만 사용 가능
+    - [x] 상품 이름은 공백 포함 최대 15자까지 입력 가능
+    - [x] 가능한 특수 문자: ( ), [ ], +, -, &, /, _
+    - [X] "카카오"가 포함된 문구는 담당 MD와 협의한 경우에만 사용 가능
 
 ## 힌트
 
@@ -57,11 +57,75 @@ Content-Type: application/json
 ```
 
 ### 로그인 및 회원가입
-- [ ] email, password 를 통한 회원가입
-- [ ] 유저 정보를 기반으로 한 로그인
+- [x] email, password 를 통한 회원가입
+- [x] 유저 정보를 기반으로 한 로그인
 
 ### 토큰 발급
-- [ ] 로그인이 완료된다면 토큰 제공 (bearer 방식 -> JWT 사용)
+- [x] 로그인이 완료된다면 토큰 제공 (bearer 방식 -> JWT 사용)
+
+## step3 - 위시리스트
+
+### **기능 요구 사항**
+
+이전 단계에서 로그인 후 받은 토큰을 사용하여 사용자별 위시 리스트 기능을 구현한다.
+
+- 위시 리스트에 등록된 상품 목록을 조회할 수 있다.
+- 위시 리스트에 상품을 추가할 수 있다.
+- 위시 리스트에 담긴 상품을 삭제할 수 있다.
+
+### **실행 결과**
+
+사용자 정보는 요청 헤더의 **Authorization** 필드를 사용한다.
+
+- **`Authorization: <유형> <자격증명>`**
+
+    ```bash
+    Authorization: Bearer token
+    ```
+
+### **힌트: 사용자 시나리오**
+
+- **위시 리스트 상품 추가**
+
+<img alt="Image" src="https://github.com/user-attachments/assets/616efc65-6989-4175-b499-73ed2069daa4" width="50%" />
+
+
+- **위시 리스트 상품 삭제**
+
+<img alt="Image" src="https://github.com/user-attachments/assets/77e0e767-089d-44a5-a5c8-95444b893426" width="50%" />
+
+
+### **HandlerMethodArgumentResolver**
+
+컨트롤러 메서드에 진입하기 전처리를 통해 객체를 주입할 수 있다.
+
+```java
+public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
+    private final MemberService memberService;
+
+    public LoginMemberArgumentResolver(MemberService memberService) {
+        this.memberService = memberService;
+    }
+
+@Overridepublic boolean supportsParameter(MethodParameter parameter) {
+        return parameter.getParameterAnnotation(LoginMember.class);
+    }
+
+@Overridepublic Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    ...
+            return new LoginMember(member.getId(), member.getName(), member.getEmail(), member.getRole());
+    }
+
+```
+
+```java
+@PostMapping("/wishes")
+public void create(
+    @RequestBody WishRequest request,
+    @LoginMember Member member
+) {
+}
+```
 
 ## 진행 방식
 
