@@ -10,18 +10,6 @@
     - [ ] 가능한 특수 문자: ( ), [ ], +, -, &, /, _
     - [ ] "카카오"가 포함된 문구는 담당 MD와 협의한 경우에만 사용 가능
 
-## 진행 방식
-
-- 미션은 **과제 진행 요구 사항**, **기능 요구 사항**, **프로그래밍 요구 사항** 세 가지로 구성되어 있다.
-- 세 개의 요구 사항을 만족하기 위해 노력한다. 특히 기능을 구현하기 전에 기능 목록을 만들고, 기능 단위로 커밋 하는 방식으로 진행한다.
-- **기능 요구 사항에 기재되지 않은 내용은 스스로 판단하여 구현한다.**
-
-## 과제 진행 요구 사항
-
-- **기능을 구현하기 전 `README.md`에 구현할 기능 목록을 정리**해 추가한다.
-- Git의 커밋 단위는 앞 단계에서 **`README.md`**에 정리한 기능 목록 단위로 추가한다.
-    - [AngularJS Git Commit Message Conventions](https://gist.github.com/stephenparish/9941e89d80e2bc58a153)을 참고해 커밋 메시지를 작성한다.
-
 ## 힌트
 
 ### validation
@@ -36,3 +24,53 @@ implementation 'spring-boot-starter-validation'
 
 - [Validating Form Input](https://spring.io/guides/gs/validating-form-input)
 - [Validation in Spring Boot](https://www.baeldung.com/spring-boot-bean-validation)
+
+## step2 - 인증
+
+사용자가 로그인하고 사용자별 기능을 사용할 수 있도록 구현한다.
+
+아래 예시와 같이 HTTP 메시지를 주고받도록 구현한다.
+
+### Request
+
+```
+POST /login/token HTTP/1.1
+content-type: application/json
+host: localhost:8080
+
+{
+    "password": "password",
+    "email": "admin@email.com"
+}
+
+```
+
+### Response
+
+```
+HTTP/1.1 200
+Content-Type: application/json
+
+{
+    "accessToken": ""
+}
+```
+
+### 로그인 및 회원가입
+- [ ] email, password 를 통한 회원가입
+- [ ] 유저 정보를 기반으로 한 로그인
+
+### 토큰 발급
+- [ ] 로그인이 완료된다면 토큰 제공 (bearer 방식 -> JWT 사용)
+
+## 진행 방식
+
+- 미션은 **과제 진행 요구 사항**, **기능 요구 사항**, **프로그래밍 요구 사항** 세 가지로 구성되어 있다.
+- 세 개의 요구 사항을 만족하기 위해 노력한다. 특히 기능을 구현하기 전에 기능 목록을 만들고, 기능 단위로 커밋 하는 방식으로 진행한다.
+- **기능 요구 사항에 기재되지 않은 내용은 스스로 판단하여 구현한다.**
+
+## 과제 진행 요구 사항
+
+- **기능을 구현하기 전 `README.md`에 구현할 기능 목록을 정리**해 추가한다.
+- Git의 커밋 단위는 앞 단계에서 **`README.md`** 에 정리한 기능 목록 단위로 추가한다.
+    - [AngularJS Git Commit Message Conventions](https://gist.github.com/stephenparish/9941e89d80e2bc58a153)을 참고해 커밋 메시지를 작성한다.
