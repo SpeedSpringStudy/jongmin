@@ -13,7 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import project.auth.JwtAuthenticationFilter;
 import project.auth.JwtTokenProvider;
-import project.user.dao.UserDao;
+import project.member.repository.MemberRepository;
 
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true)
@@ -21,7 +21,7 @@ import project.user.dao.UserDao;
 public class SecurityConfig {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserDao userDao;
+    private final MemberRepository memberRepository;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,7 +44,7 @@ public class SecurityConfig {
                 )
 
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtTokenProvider, userDao),
+                        new JwtAuthenticationFilter(jwtTokenProvider, memberRepository),
                         UsernamePasswordAuthenticationFilter.class
                 );
 

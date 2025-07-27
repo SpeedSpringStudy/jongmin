@@ -2,34 +2,45 @@ package project.products.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import project.products.dao.ProductDao;
-import project.products.domain.Product;
+import org.springframework.transaction.annotation.Transactional;
+import project.products.dto.ProductRequestDto;
+import project.products.entity.Product;
+import project.products.repository.ProductRepository;
 
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductService {
 
-    private final ProductDao productDao;
+    private final ProductRepository productRepository;
 
     public List<Product> getAll() {
-        return productDao.findAll();
+        return productRepository.findAll();
     }
 
     public Product getOne(Long id) {
-        return productDao.findById(id);
+        return productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("상품을 찾을 수 없습니다."));
     }
 
+    @Transactional
     public void add(Product product) {
-        productDao.save(product);
+        if (productRepository.existsByName(product.getName())) {
+            throw new IllegalArgumentException("이미 존재하는 상품 이름입니다.");
+        }
+        productRepository.save(product);
     }
 
-    public void update(Long id, Product product) {
-        productDao.update(new Product(id, product.getName(), product.getPrice(), product.getImageUrl()));
+    @Transactional
+    public void update(Long id, Product updated) {
+        Product product = getOne(id);
+        product.update(updated); // Product 엔티티에 update 메서드 필요
     }
 
+    @Transactional
     public void delete(Long id) {
-        productDao.delete(id);
+        productRepository.deleteById(id);
     }
 }

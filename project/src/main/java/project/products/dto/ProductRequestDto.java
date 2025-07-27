@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import project.products.domain.Product;
+import project.products.entity.Product;
 import project.products.validator.ForbiddenWords;
 
 @Getter

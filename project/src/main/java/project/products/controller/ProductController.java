@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.products.dto.ProductRequestDto;
 import project.products.service.ProductService;
-import project.products.domain.Product;
+import project.products.entity.Product;
 
 import java.util.List;
 
