@@ -1,12 +1,12 @@
-package project.user.controller;
+package project.member.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.user.dto.LoginRequestDto;
-import project.user.dto.SignupRequestDto;
-import project.user.service.AuthService;
+import project.member.dto.LoginRequestDto;
+import project.member.dto.SignupRequestDto;
+import project.member.service.AuthService;
 
 import java.util.Map;
 

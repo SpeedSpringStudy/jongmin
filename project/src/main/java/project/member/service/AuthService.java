@@ -1,14 +1,14 @@
-package project.user.service;
+package project.member.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import project.auth.JwtTokenProvider;
 import project.common.exception.UnauthorizedException;
-import project.user.dao.UserDao;
-import project.user.domain.User;
-import project.user.dto.LoginRequestDto;
-import project.user.dto.SignupRequestDto;
+import project.member.repository.MemberRepository;
+import project.member.entity.Member;
+import project.member.dto.LoginRequestDto;
+import project.member.dto.SignupRequestDto;
 
 import java.util.Map;
 
@@ -16,39 +16,40 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final UserDao userDao;
+    private final MemberRepository memberRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final BCryptPasswordEncoder passwordEncoder;
 
     public void signup(SignupRequestDto requestDto) {
-        if (userDao.findByEmail(requestDto.getEmail()).isPresent()) {
+        if (memberRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
         }
 
         String rawPassword = requestDto.getPassword();
         String encodedPassword = passwordEncoder.encode(rawPassword);
 
-        User user = User.builder()
+        Member member = Member.builder()
                 .email(requestDto.getEmail())
                 .password(encodedPassword)
                 .role("USER")
                 .build();
 
-        userDao.save(user);
+        memberRepository.save(member);
     }
 
     public Map<String, String> login(LoginRequestDto dto) {
-        User user = userDao.findByEmail(dto.getEmail())
+        Member member = memberRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
-        if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
+        if (!passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        String accessToken = jwtTokenProvider.generateAccessToken(user.getEmail(), user.getRole());
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user.getEmail(), user.getRole());
+        String accessToken = jwtTokenProvider.generateAccessToken(member.getEmail(), member.getRole());
+        String refreshToken = jwtTokenProvider.generateRefreshToken(member.getEmail(), member.getRole());
 
-        userDao.updateRefreshToken(user.getEmail(), refreshToken);
+        member.updateRefreshToken(refreshToken);
+        memberRepository.save(member);
 
         return Map.of(
                 "accessToken", accessToken,
@@ -62,7 +63,11 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getSubject(accessToken);
-        userDao.updateRefreshToken(email, null);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자입니다."));
+
+        member.updateRefreshToken(null);
+        memberRepository.save(member);
     }
 
     public String reissueAccessToken(String refreshToken) {
@@ -73,8 +78,10 @@ public class AuthService {
         String email = jwtTokenProvider.getSubject(refreshToken);
         String role = jwtTokenProvider.getRole(refreshToken);
 
-        String storedToken = userDao.getRefreshTokenByEmail(email)
+        Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UnauthorizedException("로그아웃했거나 유효하지 않은 사용자입니다."));
+
+        String storedToken = member.getRefreshToken();
 
         if (storedToken == null || !storedToken.equals(refreshToken)) {
             throw new UnauthorizedException("리프레시 토큰이 만료되었거나 일치하지 않습니다.");
