@@ -122,3 +122,9 @@ alter table member
 ```
 
 지금까지는 `JdbcTemplate`를 이용했었는데, 그걸 `JPA` 로 리팩토링 하는 과제이다.
+
+## step2 - 엔티티 모델링
+
+1. 엔티티 연관 관계 설정
+    - [ ]  `Wish` 엔티티가 `User`, `Product` 참조하도록 함
+    - [ ]  `user_id`, `product_id`를 FK로 가지도록 설정
