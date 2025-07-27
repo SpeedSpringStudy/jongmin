@@ -12,8 +12,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import project.user.domain.User;
-import project.user.dao.UserDao;
+import project.member.entity.Member;
+import project.member.repository.MemberRepository;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -23,7 +23,7 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserDao userDao;
+    private final MemberRepository memberRepository;
 
     @Override
     protected void doFilterInternal(
@@ -38,16 +38,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String email = jwtTokenProvider.getSubject(token);
             String role = jwtTokenProvider.getRole(token);
 
-            User user = userDao.findByEmail(email)
+            Member member = memberRepository.findByEmail(email)
                     .orElseThrow(() -> new UsernameNotFoundException("사용자 정보를 찾을 수 없습니다."));
 
-            request.setAttribute("user", user);
+            request.setAttribute("user", member);
 
             Collection<? extends GrantedAuthority> authorities =
                     List.of(new org.springframework.security.core.authority.SimpleGrantedAuthority(role));
 
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(user, null, authorities);
+                    new UsernamePasswordAuthenticationToken(member, null, authorities);
 
             authentication.setDetails(
                     new WebAuthenticationDetailsSource().buildDetails(request)
