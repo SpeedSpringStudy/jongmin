@@ -1,6 +1,7 @@
 package project.products.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,7 @@ public class ProductViewController {
 
     @GetMapping
     public String productList(Model model) {
-        model.addAttribute("products", productService.getAll());
+        model.addAttribute("products", productService.getAll(PageRequest.of(0, 10)));
         return "products";
     }
 
