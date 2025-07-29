@@ -13,7 +13,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
-public class AuthController {
+public class AuthController implements AuthSwagger {
 
     private final AuthService authService;
 

@@ -1,6 +1,5 @@
 package project.products.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -10,34 +9,32 @@ import project.products.dto.ProductRequestDto;
 import project.products.service.ProductService;
 import project.products.entity.Product;
 
-import java.util.List;
-
+@RequestMapping("/api/products")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/products")
-public class ProductController {
+public class ProductController implements ProductSwagger {
 
     private final ProductService productService;
 
-    @GetMapping
+    @Override
     public ResponseEntity<Page<Product>> getAll(Pageable pageable) {
         return ResponseEntity.ok(productService.getAll(pageable));
     }
 
-    @PostMapping
-    public ResponseEntity<Void> create(@RequestBody @Valid ProductRequestDto request) {
+    @Override
+    public ResponseEntity<Void> create(ProductRequestDto request) {
         productService.add(request.toEntity());
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Product product) {
+    @Override
+    public ResponseEntity<Void> update(Long id, Product product) {
         productService.update(id, product);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    @Override
+    public ResponseEntity<Void> delete(Long id) {
         productService.delete(id);
         return ResponseEntity.noContent().build();
     }
