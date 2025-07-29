@@ -1,6 +1,8 @@
 package project.wishlist.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.products.entity.Product;
@@ -9,9 +11,6 @@ import project.wishlist.dto.WishResponse;
 import project.wishlist.entity.Wishlist;
 import project.wishlist.repository.WishlistRepository;
 import project.member.entity.Member;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,9 +37,8 @@ public class WishlistService {
         wishlistRepository.deleteByMemberIdAndProductId(member.getId(), productId);
     }
 
-    public List<WishResponse> getWishes(Member member) {
-        return wishlistRepository.findByMemberId(member.getId()).stream()
-                .map(w -> WishResponse.builder().productId(w.getProduct().getId()).build())
-                .collect(Collectors.toList());
+    public Page<WishResponse> getWishes(Member member, Pageable pageable) {
+        return wishlistRepository.findByMemberId(member.getId(), pageable)
+                .map(w -> WishResponse.builder().productId(w.getProduct().getId()).build());
     }
 }
