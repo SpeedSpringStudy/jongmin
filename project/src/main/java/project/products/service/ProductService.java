@@ -1,13 +1,13 @@
 package project.products.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.products.dto.ProductRequestDto;
 import project.products.entity.Product;
 import project.products.repository.ProductRepository;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -16,8 +16,8 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public List<Product> getAll() {
-        return productRepository.findAll();
+    public Page<Product> getAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     public Product getOne(Long id) {

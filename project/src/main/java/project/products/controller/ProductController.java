@@ -2,6 +2,8 @@ package project.products.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.products.dto.ProductRequestDto;
@@ -18,8 +20,8 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAll() {
-        return ResponseEntity.ok(productService.getAll());
+    public ResponseEntity<Page<Product>> getAll(Pageable pageable) {
+        return ResponseEntity.ok(productService.getAll(pageable));
     }
 
     @PostMapping
