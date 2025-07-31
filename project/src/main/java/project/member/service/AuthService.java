@@ -28,10 +28,15 @@ public class AuthService {
         String rawPassword = requestDto.getPassword();
         String encodedPassword = passwordEncoder.encode(rawPassword);
 
+        String role = requestDto.getRole();
+        if (!role.equals("USER") && !role.equals("ADMIN")) {
+            throw new IllegalArgumentException("역할은 USER 또는 ADMIN만 가능합니다.");
+        }
+
         Member member = Member.builder()
                 .email(requestDto.getEmail())
                 .password(encodedPassword)
-                .role("USER")
+                .role(role)
                 .build();
 
         memberRepository.save(member);

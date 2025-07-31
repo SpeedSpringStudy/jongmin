@@ -18,15 +18,20 @@ public class Product {
     @Column(length = 15, nullable = false)
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
     @Column(name = "image_url", nullable = false)
     private String imageUrl;
 
     @Column(nullable = false)
     private Integer price;
 
-    public void update(Product updated) {
-        this.name = updated.getName();
-        this.imageUrl = updated.getImageUrl();
-        this.price = updated.getPrice();
+    public void update(String name, int price, String imageUrl, Category category) {
+        this.name = name;
+        this.price = price;
+        this.imageUrl = imageUrl;
+        this.category = category;
     }
 }
