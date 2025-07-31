@@ -23,8 +23,11 @@ public interface AuthSwagger {
     @Operation(summary = "회원가입",
             requestBody = @RequestBody(
                     content = @Content(
-                            examples = @ExampleObject(value = "{\n  \"email\": \"test@example.com\",\n  \"password\": \"12345678\"\n}"),
-                            schema = @Schema(implementation = SignupRequestDto.class)
+                            schema = @Schema(implementation = SignupRequestDto.class),
+                            examples = {
+                                    @ExampleObject(name = "일반 유저", value = "{\n  \"email\": \"user@example.com\",\n  \"password\": \"12345678\"\n}"),
+                                    @ExampleObject(name = "관리자", value = "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"12345678\",\n  \"role\": \"ADMIN\"\n}")
+                            }
                     )
             )
     )
@@ -53,8 +56,11 @@ public interface AuthSwagger {
     @Operation(summary = "토큰 재발급",
             requestBody = @RequestBody(
                     content = @Content(
-                            examples = @ExampleObject(value = "{\n  \"refreshToken\": \"{refreshToken}\"\n}"),
-                            schema = @Schema(implementation = Map.class)
+                            schema = @Schema(implementation = Map.class),
+                            examples = {
+                                    @ExampleObject(name = "일반 유저 로그인", value = "{\n  \"email\": \"user@example.com\",\n  \"password\": \"12345678\"\n}"),
+                                    @ExampleObject(name = "관리자 로그인", value = "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"12345678\"\n}")
+                            }
                     )
             )
     )
