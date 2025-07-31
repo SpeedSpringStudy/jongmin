@@ -1,10 +1,8 @@
 package project.products.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Getter;
+import project.products.entity.Category;
 import project.products.entity.Product;
 import project.products.validator.ForbiddenWords;
 
@@ -25,11 +23,15 @@ public class ProductRequestDto {
 
     private String imageUrl;
 
-    public Product toEntity() {
+    @NotNull(message = "카테고리 ID는 필수입니다.")
+    private Long categoryId;
+
+    public Product toEntity(Category category) {
         return Product.builder()
                 .name(name)
                 .price(price)
                 .imageUrl(imageUrl)
+                .category(category)
                 .build();
     }
 }
