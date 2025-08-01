@@ -1,0 +1,41 @@
+package project.products.productoption.entity;
+
+import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import project.products.product.entity.Product;
+import project.products.option.entity.Option;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ProductOption {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "option_id", nullable = false)
+    private Option option;
+
+    @Column(nullable = false)
+    private int quantity;
+
+    @Builder
+    public ProductOption(Product product, Option option, int quantity) {
+        this.product = product;
+        this.option = option;
+        this.quantity = quantity;
+    }
+
+    public void updateQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+}
