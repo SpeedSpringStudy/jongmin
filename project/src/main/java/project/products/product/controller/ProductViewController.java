@@ -29,7 +29,7 @@ public class ProductViewController {
 
     @GetMapping("/edit/{id}")
     public String editProductForm(@PathVariable Long id, Model model) {
-        model.addAttribute("product", productService.getOne(id));
+        model.addAttribute("product", productService.findProductById(id));
         return "product_edit_form";
     }
 }

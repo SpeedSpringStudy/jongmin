@@ -3,6 +3,10 @@ package project.products.product.entity;
 import jakarta.persistence.*;
 import project.products.category.entity.Category;
 import lombok.*;
+import project.products.productoption.entity.ProductOption;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -28,6 +32,10 @@ public class Product {
 
     @Column(nullable = false)
     private Integer price;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ProductOption> productOptions = new ArrayList<>();
 
     public void update(String name, int price, String imageUrl, Category category) {
         this.name = name;

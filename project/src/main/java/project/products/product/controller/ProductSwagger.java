@@ -13,7 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import project.products.product.dto.ProductRequestDto;
-import project.products.product.entity.Product;
+import project.products.product.dto.ProductResponseDto;
 
 @Tag(name = "Product", description = "상품 관련 API")
 @RequestMapping("/api/products")
@@ -21,7 +21,7 @@ public interface ProductSwagger {
 
     @Operation(summary = "상품 전체 조회", description = "페이지네이션 사용: ?page=0&size=10&sort=price,desc")
     @GetMapping
-    ResponseEntity<Page<Product>> getAll(@ParameterObject Pageable pageable);
+    ResponseEntity<Page<ProductResponseDto>> getAll(@ParameterObject Pageable pageable);
 
     @Operation(
             summary = "상품 등록",
@@ -38,7 +38,7 @@ public interface ProductSwagger {
             )
     )
     @PostMapping
-    ResponseEntity<Void> create(@org.springframework.web.bind.annotation.RequestBody ProductRequestDto request);
+    ResponseEntity<ProductResponseDto> create(@org.springframework.web.bind.annotation.RequestBody ProductRequestDto request);
 
     @Operation(
             summary = "상품 수정",
