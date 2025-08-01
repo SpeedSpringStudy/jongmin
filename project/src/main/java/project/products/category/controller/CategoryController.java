@@ -1,13 +1,13 @@
-package project.products.controller;
+package project.products.category.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import project.products.dto.CategoryRequestDto;
-import project.products.dto.CategoryResponseDto;
-import project.products.service.CategoryService;
+import project.products.category.dto.CategoryRequestDto;
+import project.products.category.dto.CategoryResponseDto;
+import project.products.category.service.CategoryService;
 
 import java.util.List;
 

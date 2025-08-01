@@ -1,8 +1,8 @@
-package project.products.dto;
+package project.products.category.dto;
 
 import lombok.Builder;
 import lombok.Getter;
-import project.products.entity.Category;
+import project.products.category.entity.Category;
 
 @Getter
 @Builder

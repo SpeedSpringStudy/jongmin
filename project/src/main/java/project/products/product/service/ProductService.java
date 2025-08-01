@@ -1,15 +1,15 @@
-package project.products.service;
+package project.products.product.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.products.dto.ProductRequestDto;
-import project.products.entity.Category;
-import project.products.entity.Product;
-import project.products.repository.ProductRepository;
-import project.products.repository.CategoryRepository;
+import project.products.product.dto.ProductRequestDto;
+import project.products.category.entity.Category;
+import project.products.product.entity.Product;
+import project.products.product.repository.ProductRepository;
+import project.products.category.repository.CategoryRepository;
 
 @Service
 @RequiredArgsConstructor

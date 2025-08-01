@@ -1,4 +1,4 @@
-package project.products.controller;
+package project.products.product.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -7,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import project.products.service.ProductService;
+import project.products.product.service.ProductService;
 
 @Controller
 @RequiredArgsConstructor

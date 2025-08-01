@@ -1,4 +1,4 @@
-package project.products.entity;
+package project.products.category.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

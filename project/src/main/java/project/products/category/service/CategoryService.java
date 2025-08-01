@@ -1,12 +1,12 @@
-package project.products.service;
+package project.products.category.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.products.dto.CategoryRequestDto;
-import project.products.dto.CategoryResponseDto;
-import project.products.entity.Category;
-import project.products.repository.CategoryRepository;
+import project.products.category.dto.CategoryRequestDto;
+import project.products.category.dto.CategoryResponseDto;
+import project.products.category.entity.Category;
+import project.products.category.repository.CategoryRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;

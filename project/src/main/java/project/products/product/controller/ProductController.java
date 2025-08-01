@@ -1,4 +1,4 @@
-package project.products.controller;
+package project.products.product.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -6,9 +6,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import project.products.dto.ProductRequestDto;
-import project.products.entity.Product;
-import project.products.service.ProductService;
+import project.products.product.dto.ProductRequestDto;
+import project.products.product.entity.Product;
+import project.products.product.service.ProductService;
 
 @RequestMapping("/api/products")
 @RestController

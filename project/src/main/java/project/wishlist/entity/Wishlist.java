@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.member.entity.Member;
-import project.products.entity.Product;
+import project.products.product.entity.Product;
 
 @Entity
 @Getter

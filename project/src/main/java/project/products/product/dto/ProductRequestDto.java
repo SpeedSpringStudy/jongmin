@@ -1,9 +1,9 @@
-package project.products.dto;
+package project.products.product.dto;
 
 import jakarta.validation.constraints.*;
 import lombok.Getter;
-import project.products.entity.Category;
-import project.products.entity.Product;
+import project.products.category.entity.Category;
+import project.products.product.entity.Product;
 import project.products.validator.ForbiddenWords;
 
 @Getter

@@ -1,4 +1,4 @@
-package project.products.controller;
+package project.products.product.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,8 +12,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.products.dto.ProductRequestDto;
-import project.products.entity.Product;
+import project.products.product.dto.ProductRequestDto;
+import project.products.product.entity.Product;
 
 @Tag(name = "Product", description = "상품 관련 API")
 @RequestMapping("/api/products")

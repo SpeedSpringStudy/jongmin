@@ -1,4 +1,4 @@
-package project.products.controller;
+package project.products.category.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,8 +10,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.products.dto.CategoryRequestDto;
-import project.products.dto.CategoryResponseDto;
+import project.products.category.dto.CategoryRequestDto;
+import project.products.category.dto.CategoryResponseDto;
 
 import java.util.List;
 

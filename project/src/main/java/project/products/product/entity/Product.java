@@ -1,6 +1,7 @@
-package project.products.entity;
+package project.products.product.entity;
 
 import jakarta.persistence.*;
+import project.products.category.entity.Category;
 import lombok.*;
 
 @Entity
