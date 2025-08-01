@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>로그인</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .login-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); width: 300px; text-align: center; }
+        .login-container h1 { margin-bottom: 20px; color: #333; }
+        .login-container input[type="email"], .login-container input[type="password"] { width: calc(100% - 20px); padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .login-container button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .login-container button:hover { background-color: #0056b3; }
+        .login-container p { margin-top: 15px; font-size: 14px; }
+        .login-container a { color: #007bff; text-decoration: none; }
+        .login-container a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>로그인</h1>
+        <form id="loginForm">
+            <input type="email" id="email" name="email" placeholder="이메일" required><br>
+            <input type="password" id="password" name="password" placeholder="비밀번호" required><br>
+            <button type="submit">로그인</button>
+        </form>
+        <p>계정이 없으신가요? <a href="/signup">회원가입</a></p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('로그인 성공!');
+                    // 로그인 성공 후 토큰을 localStorage에 저장 (예시)
+                    localStorage.setItem('accessToken', data.accessToken);
+                    localStorage.setItem('refreshToken', data.refreshToken);
+                    // 상품 목록 페이지로 리다이렉트
+                    window.location.href = '/products';
+                } else {
+                    alert('로그인 실패: ' + (data.message || response.statusText));
+                }
+            } catch (error) {
+                alert('로그인 중 오류 발생: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

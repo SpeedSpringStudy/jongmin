@@ -18,9 +18,9 @@ public class AuthController implements AuthSwagger {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<Void> signup(@RequestBody @Valid SignupRequestDto dto) {
+    public ResponseEntity<Map<String, String>> signup(@RequestBody @Valid SignupRequestDto dto) {
         authService.signup(dto);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Map.of("message", "회원가입 성공!"));
     }
 
     @PostMapping("/login")
