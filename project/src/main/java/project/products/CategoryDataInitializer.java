@@ -3,8 +3,8 @@ package project.products;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import project.products.entity.Category;
-import project.products.repository.CategoryRepository;
+import project.products.category.entity.Category;
+import project.products.category.repository.CategoryRepository;
 
 import java.util.List;
 

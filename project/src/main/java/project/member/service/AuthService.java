@@ -29,6 +29,9 @@ public class AuthService {
         String encodedPassword = passwordEncoder.encode(rawPassword);
 
         String role = requestDto.getRole();
+        if (role == null || role.isEmpty()) {
+            role = "USER"; // 기본값으로 USER 설정
+        }
         if (!role.equals("USER") && !role.equals("ADMIN")) {
             throw new IllegalArgumentException("역할은 USER 또는 ADMIN만 가능합니다.");
         }

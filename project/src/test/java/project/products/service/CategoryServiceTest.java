@@ -2,10 +2,11 @@ package project.products.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import project.products.dto.CategoryRequestDto;
-import project.products.dto.CategoryResponseDto;
-import project.products.entity.Category;
-import project.products.repository.CategoryRepository;
+import project.products.category.dto.CategoryRequestDto;
+import project.products.category.dto.CategoryResponseDto;
+import project.products.category.entity.Category;
+import project.products.category.repository.CategoryRepository;
+import project.products.category.service.CategoryService;
 
 import java.util.List;
 import java.util.Optional;

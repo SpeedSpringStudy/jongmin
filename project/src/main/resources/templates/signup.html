@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .signup-container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); width: 300px; text-align: center; }
+        .signup-container h1 { margin-bottom: 20px; color: #333; }
+        .signup-container input[type="email"], .signup-container input[type="password"] { width: calc(100% - 20px); padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 4px; }
+        .signup-container button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .signup-container button:hover { background-color: #218838; }
+        .signup-container p { margin-top: 15px; font-size: 14px; }
+        .signup-container a { color: #007bff; text-decoration: none; }
+        .signup-container a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h1>회원가입</h1>
+        <form id="signupForm">
+            <input type="email" id="email" name="email" placeholder="이메일" required><br>
+            <input type="password" id="password" name="password" placeholder="비밀번호" required><br>
+            <button type="submit">회원가입</button>
+        </form>
+        <p>이미 계정이 있으신가요? <a href="/login">로그인</a></p>
+    </div>
+
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/auth/signup', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('회원가입 성공!');
+                    window.location.href = '/login';
+                } else {
+                    alert('회원가입 실패: ' + (data.message || response.statusText));
+                }
+            } catch (error) {
+                alert('회원가입 중 오류 발생: ' + error.message);
+            }
+        });
+    </script>
+</body>
+</html>

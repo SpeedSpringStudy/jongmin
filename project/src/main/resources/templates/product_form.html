@@ -2,6 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>상품 추가</title>
+    <style>
+        .option-item {
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
 <h1>상품 추가</h1>
@@ -9,27 +14,156 @@
     <input type="text" name="name" placeholder="이름" required/><br/>
     <input type="number" name="price" placeholder="가격" required/><br/>
     <input type="text" name="imageUrl" placeholder="이미지 URL" required/><br/>
+    <select name="categoryId" required>
+        <option value="">카테고리 선택</option>
+        <!-- 카테고리 목록은 서버에서 Thymeleaf로 렌더링하거나, JS로 가져와서 채울 수 있습니다. -->
+        <!-- 여기서는 임시로 하드코딩하거나, 나중에 서버에서 동적으로 채우도록 합니다. -->
+        <option value="1">교환권</option>
+        <option value="2">상품권</option>
+        <option value="3">뷰티</option>
+        <option value="4">패션</option>
+        <option value="5">식품</option>
+        <option value="6">리빙/도서</option>
+        <option value="7">레저/스포츠</option>
+        <option value="8">아티스트/캐릭터</option>
+        <option value="9">유아동/반려</option>
+        <option value="10">디지털/가전</option>
+        <option value="11">카카오프렌즈</option>
+        <option value="12">트렌드 선물</option>
+        <option value="13">백화점</option>
+    </select><br/>
+
+    <h2>옵션</h2>
+    <div id="optionsContainer">
+        <!-- 옵션 필드가 동적으로 추가될 영역 -->
+    </div>
+    <button type="button" id="addOptionBtn">옵션 추가</button><br/>
+
     <button type="submit">저장</button>
 </form>
 <button onclick="location.href='/products'">목록으로</button>
 
 <script>
-    document.getElementById("addForm").addEventListener("submit", async function(e) {
-        e.preventDefault();
-        const form = e.target;
-        const data = {
-            name: form.name.value,
-            price: parseInt(form.price.value),
-            imageUrl: form.imageUrl.value
-        };
+    document.addEventListener('DOMContentLoaded', async () => {
+        const addForm = document.getElementById('addForm');
+        const optionsContainer = document.getElementById('optionsContainer');
+        const addOptionBtn = document.getElementById('addOptionBtn');
 
-        await fetch("/api/products", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data)
+        // 카테고리 목록을 동적으로 가져오는 부분 (선택 사항)
+        // 실제 프로젝트에서는 서버 API를 호출하여 카테고리 목록을 가져오는 것이 일반적입니다.
+        // const categorySelect = addForm.querySelector('select[name="categoryId"]');
+        // const categoriesResponse = await fetch('/api/categories');
+        // const categories = await categoriesResponse.json();
+        // categories.forEach(category => {
+        //     const option = document.createElement('option');
+        //     option.value = category.id;
+        //     option.textContent = category.name;
+        //     categorySelect.appendChild(option);
+        // });
+
+        let optionIndex = 0;
+
+        addOptionBtn.addEventListener('click', () => {
+            const optionDiv = document.createElement('div');
+            optionDiv.classList.add('option-item');
+            optionDiv.innerHTML = `
+                <input type="text" class="option-name" placeholder="옵션 이름" required/>
+                <input type="number" class="option-quantity" placeholder="수량" value="1" min="1" required/>
+                <button type="button" class="remove-option-btn">삭제</button>
+            `;
+            optionsContainer.appendChild(optionDiv);
+
+            optionDiv.querySelector('.remove-option-btn').addEventListener('click', () => {
+                optionsContainer.removeChild(optionDiv);
+            });
         });
 
-        location.href = "/products";
+        addForm.addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const form = e.target;
+
+            const options = [];
+            optionsContainer.querySelectorAll('.option-item').forEach(item => {
+                const name = item.querySelector('.option-name').value;
+                const quantity = parseInt(item.querySelector('.option-quantity').value);
+                options.push({ name, quantity });
+            });
+
+            const accessToken = localStorage.getItem('accessToken');
+            const headers = {
+                "Content-Type": "application/json"
+            };
+            if (accessToken) {
+                headers["Authorization"] = `Bearer ${accessToken}`;
+            }
+
+            // 옵션 생성 요청 (각 옵션별로 API 호출)
+            const createdOptions = [];
+            for (const option of options) {
+                try {
+                    const response = await fetch("/api/options", {
+                        method: "POST",
+                        headers: headers,
+                        body: JSON.stringify({ name: option.name })
+                    });
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        alert(`옵션 생성 실패: ${errorData.message || response.statusText}`);
+                        return; // 옵션 생성 실패 시 상품 생성 중단
+                    }
+                    const createdOption = await response.json();
+                    createdOptions.push({ optionId: createdOption.id, quantity: option.quantity });
+                } catch (error) {
+                    alert(`옵션 생성 중 오류 발생: ${error.message}`);
+                    return; // 옵션 생성 실패 시 상품 생성 중단
+                }
+            }
+
+            const productData = {
+                name: form.name.value,
+                price: parseInt(form.price.value),
+                imageUrl: form.imageUrl.value,
+                categoryId: parseInt(form.categoryId.value)
+            };
+
+            const productResponse = await fetch("/api/products", {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify(productData)
+            });
+
+            if (!productResponse.ok) {
+                const errorData = await productResponse.json();
+                alert(`상품 생성 실패: ${errorData.message || productResponse.statusText}`);
+                return;
+            }
+            const createdProduct = await productResponse.json();
+
+            // ProductOption 연결 요청 (생성된 상품 ID와 옵션 ID 사용)
+            for (const opt of createdOptions) {
+                try {
+                    const productOptionResponse = await fetch("/api/product-options", {
+                        method: "POST",
+                        headers: headers,
+                        body: JSON.stringify({
+                            productId: createdProduct.id,
+                            optionId: opt.optionId,
+                            quantity: opt.quantity
+                        })
+                    });
+                    if (!productOptionResponse.ok) {
+                        const errorData = await productOptionResponse.json();
+                        alert(`상품-옵션 연결 실패: ${errorData.message || productOptionResponse.statusText}`);
+                        return; // 연결 실패 시 중단
+                    }
+                } catch (error) {
+                    alert(`상품-옵션 연결 중 오류 발생: ${error.message}`);
+                    return; // 연결 실패 시 중단
+                }
+            }
+
+            location.href = "/products";
+        });
     });
 </script>
 </body>

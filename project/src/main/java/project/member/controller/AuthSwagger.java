@@ -32,7 +32,7 @@ public interface AuthSwagger {
             )
     )
     @PostMapping("/signup")
-    ResponseEntity<Void> signup(@RequestBody @Valid SignupRequestDto dto);
+    ResponseEntity<Map<String, String>> signup(@RequestBody @Valid SignupRequestDto dto);
 
     @Operation(summary = "로그인",
             requestBody = @RequestBody(
