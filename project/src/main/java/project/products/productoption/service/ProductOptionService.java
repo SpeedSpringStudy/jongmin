@@ -57,4 +57,10 @@ public class ProductOptionService {
         return productOptionRepository.findById(productOptionId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품 옵션입니다."));
     }
+
+    @Transactional
+    public void subtractQuantity(Long productOptionId, int amount) {
+        ProductOption productOption = findProductOptionById(productOptionId);
+        productOption.subtract(amount);
+    }
 }

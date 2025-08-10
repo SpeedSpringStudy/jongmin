@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.products.product.entity.Product;
 import project.products.option.entity.Option;
+import project.products.productoption.exception.OutOfStockException;
 
 @Entity
 @Getter
@@ -37,5 +38,15 @@ public class ProductOption {
 
     public void updateQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public void subtract(int amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException("뺄 수량은 0보다 커야 합니다.");
+        }
+        if (this.quantity < amount) {
+            throw new OutOfStockException("재고가 부족합니다.");
+        }
+        this.quantity -= amount;
     }
 }
