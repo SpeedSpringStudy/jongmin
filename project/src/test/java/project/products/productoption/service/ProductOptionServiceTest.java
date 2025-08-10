@@ -11,6 +11,7 @@ import project.products.option.entity.Option;
 import project.products.option.repository.OptionRepository;
 import project.products.productoption.dto.ProductOptionRequestDto;
 import project.products.productoption.dto.ProductOptionResponseDto;
+import project.products.productoption.exception.OutOfStockException;
 import project.products.productoption.repository.ProductOptionRepository;
 import project.products.category.entity.Category;
 import project.products.category.repository.CategoryRepository;
@@ -87,6 +88,38 @@ class ProductOptionServiceTest {
         // then
         ProductOption updatedProductOption = productOptionRepository.findById(productOption.getId()).get();
         assertThat(updatedProductOption.getQuantity()).isEqualTo(15);
+    }
+
+    @Test
+    @DisplayName("상품 옵션의 수량을 차감한다.")
+    void subtractQuantity() {
+        // given
+        Category category = categoryRepository.save(Category.builder().name("식품").color("#FFFFFF").imageUrl("url").description("desc").build());
+        Product product = productRepository.save(Product.builder().name("사과").price(2000).category(category).imageUrl("url").build());
+        Option option = optionRepository.save(Option.builder().name("1kg").build());
+        ProductOption productOption = productOptionRepository.save(ProductOption.builder().product(product).option(option).quantity(10).build());
+
+        // when
+        productOptionService.subtractQuantity(productOption.getId(), 3);
+
+        // then
+        ProductOption updatedProductOption = productOptionRepository.findById(productOption.getId()).get();
+        assertThat(updatedProductOption.getQuantity()).isEqualTo(7);
+    }
+
+    @Test
+    @DisplayName("상품 옵션의 수량 차감 시 재고가 부족하면 예외가 발생한다.")
+    void subtractQuantity_ThrowsOutOfStockException() {
+        // given
+        Category category = categoryRepository.save(Category.builder().name("음료").color("#FFFFFF").imageUrl("url").description("desc").build());
+        Product product = productRepository.save(Product.builder().name("콜라").price(1500).category(category).imageUrl("url").build());
+        Option option = optionRepository.save(Option.builder().name("500ml").build());
+        ProductOption productOption = productOptionRepository.save(ProductOption.builder().product(product).option(option).quantity(2).build());
+
+        // when & then
+        assertThatThrownBy(() -> productOptionService.subtractQuantity(productOption.getId(), 5))
+                .isInstanceOf(OutOfStockException.class)
+                .hasMessage("재고가 부족합니다.");
     }
 
     @Test
