@@ -1,5 +1,6 @@
 package project.products.productoption.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,11 +18,17 @@ import project.products.category.entity.Category;
 import project.products.category.repository.CategoryRepository;
 import project.products.productoption.entity.ProductOption;
 
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
-@Transactional
 class ProductOptionServiceTest {
 
     @Autowired
@@ -38,6 +45,15 @@ class ProductOptionServiceTest {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @AfterEach
+    void tearDown() {
+        // 테스트 데이터 정리 (외래키 제약조건 고려하여 자식 테이블부터 삭제)
+        productOptionRepository.deleteAllInBatch();
+        productRepository.deleteAllInBatch();
+        optionRepository.deleteAllInBatch();
+        categoryRepository.deleteAllInBatch();
+    }
 
     @Test
     @DisplayName("상품에 옵션을 추가한다.")
@@ -136,5 +152,51 @@ class ProductOptionServiceTest {
 
         // then
         assertThat(productOptionRepository.findById(productOption.getId())).isEmpty();
+    }
+
+    @Test
+    @DisplayName("동시에 재고를 차감하면 한 번만 성공하고 나머지는 충돌 예외가 발생한다.")
+    void subtractQuantityWithOptimisticLock() throws InterruptedException {
+        // given
+        Category category = categoryRepository.save(Category.builder().name("음료").color("#FFFFFF").imageUrl("url").description("desc").build());
+        Product product = productRepository.save(Product.builder().name("사이다").price(1000).category(category).imageUrl("url").build());
+        Option option = optionRepository.save(Option.builder().name("500ml").build());
+        ProductOption po = productOptionRepository.save(ProductOption.builder().product(product).option(option).quantity(10).build());
+        Long productOptionId = po.getId();
+
+        int threadCount = 2;
+        ExecutorService executorService = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch latch = new CountDownLatch(threadCount);
+
+        AtomicInteger successCount = new AtomicInteger();
+        AtomicInteger failCount = new AtomicInteger();
+
+        // when
+        // 2개의 스레드가 거의 동시에 재고 6개 차감을 시도 (총 12개 차감 시도, 재고는 10개)
+        for (int i = 0; i < threadCount; i++) {
+            executorService.submit(() -> {
+                try {
+                    productOptionService.subtractQuantity(productOptionId, 6);
+                    successCount.incrementAndGet();
+                } catch (ObjectOptimisticLockingFailureException e) {
+                    // 충돌 발생
+                    failCount.incrementAndGet();
+                } catch (Exception e) {
+                    // 테스트 중 예상치 못한 다른 예외 발생 시 확인을 위해 출력
+                    e.printStackTrace();
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await(); // 모든 스레드의 작업이 끝날 때까지 대기
+        executorService.shutdown();
+
+        // then
+        ProductOption finalPo = productOptionRepository.findById(productOptionId).get();
+        assertThat(finalPo.getQuantity()).isEqualTo(4); // 10 - 6 = 4
+        assertThat(successCount.get()).isEqualTo(1);    // 한 개의 스레드만 성공
+        assertThat(failCount.get()).isEqualTo(1);       // 한 개의 스레드는 충돌로 실패
     }
 }

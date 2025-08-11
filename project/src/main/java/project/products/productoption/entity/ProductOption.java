@@ -29,6 +29,9 @@ public class ProductOption {
     @Column(nullable = false)
     private int quantity;
 
+    @Version
+    private Long version;
+
     @Builder
     public ProductOption(Product product, Option option, int quantity) {
         this.product = product;
